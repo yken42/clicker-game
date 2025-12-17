@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "../styles/Hero.css";
-
+import { useStore } from "../context/store";
 export const Hero = () => {
-  const [clickCounter, setClickCounter] = useState(0);
+  const { clicks, increment } = useStore();
   const [popups, setPopups] = useState([]);
 
   const handleClick = () => {
@@ -10,7 +10,7 @@ export const Hero = () => {
     const isCritical = Math.random() < 0.05;
     const points = isCritical ? 2 : 1;
     
-    setClickCounter(clickCounter + points);
+    increment(points);
 
     // Generate random angle in radians (0 to 2π)
     const angle = Math.random() * Math.PI * 2;
@@ -36,7 +36,7 @@ export const Hero = () => {
     <>
       <div className="hero-button-container">
         <div className="click-counter-container">
-          <p>{clickCounter}</p>
+          <p>{clicks}</p>
         </div>
 
         <div className="button-wrapper">

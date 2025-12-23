@@ -3,11 +3,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: 240px 20px;
+  width: auto;
+  padding: 20px;
   min-height: 200px;
   overflow: visible;
   gap: 40px;
+  flex-shrink: 0;
 }
 
 .click-counter-container {

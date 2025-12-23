@@ -3,14 +3,29 @@ import "../styles/Navbar.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../utils/cookies";
+import { disconnectSocket } from "../utils/socket";
+import { useStore } from "../context/store";
 
 export const Navbar = () => {
   const isLoggedIn = getCookie("token");
   const navigate = useNavigate();
+  const { resetClicks } = useStore();
 
   const handleLogout = async () => {
-    const response = await axios.post("http://localhost:3000/api/user/logout");
-    if (response.status === 200) {
+    try {
+      const response = await axios.post("http://localhost:3000/api/user/logout");
+      if (response.status === 200) {
+        // Clear global state before disconnecting
+        resetClicks();
+        // Disconnect socket before removing token
+        disconnectSocket();
+        removeCookie("token");
+        navigate("/login");
+      }
+    } catch (error) {
+      // Even if logout API fails, clear state, disconnect socket and clear token
+      resetClicks();
+      disconnectSocket();
       removeCookie("token");
       navigate("/login");
     }
@@ -23,11 +38,6 @@ export const Navbar = () => {
         </a>
 
         <ul className="navbar-list">
-          <li className="navbar-item">
-            <a className="navbar-link" href="/scoreboard">
-              Scoreboard
-            </a>
-          </li>
           {isLoggedIn ? (
             <li className="navbar-item">
               <a className="navbar-link" onClick={handleLogout}>

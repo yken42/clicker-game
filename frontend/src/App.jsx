@@ -5,32 +5,43 @@ import { MainLayout } from "./layout/MainLayout.jsx";
 import { Hero } from "./components/Hero.jsx";
 import { Login } from "./components/Login.jsx";
 import { Signup } from "./components/Signup.jsx";
-import { getSocket } from "./utils/socket";
+import { getSocket, connectSocket } from "./utils/socket";
+import { getCookie } from "./utils/cookies";
 
 
 function App() {
   useEffect(() => {
-    // Get singleton socket instance (reuses existing connection)
-    const socket = getSocket();
-    
-    socket.on("connect", () => {
-      console.log("Connected to server");
-    });
-    
-    socket.on("disconnect", () => {
-      console.log("Disconnected from server");
-    });
+    // Connect socket if user is logged in (e.g., on page refresh)
+    const token = getCookie("token");
+    if (token) {
+      connectSocket();
+    }
 
-    socket.on("welcome", (message) => {
+    // Set up socket listeners
+    const socket = getSocket();
+    if (!socket) {
+      return; // No socket connection if not logged in
+    }
+    
+  socket.on("connect", () => {
+    console.log("Connected to server");
+  });
+    
+  socket.on("disconnect", () => {
+    console.log("Disconnected from server");
+  });
+
+  socket.on("welcome", (message) => {
       console.log("Welcome message:", message);
-    });
+  });
 
     // Cleanup: remove event listeners (but don't disconnect socket)
-    // Socket will be reused if component remounts
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("welcome");
+      if (socket) {
+        socket.off("connect");
+        socket.off("disconnect");
+        socket.off("welcome");
+      }
     };
   }, []);
 

@@ -17,9 +17,11 @@ const green = "\x1b[32m";
 const reset = "\x1b[0m";
 
 const io = new Server(httpServer, {
-  withCredentials: true,
   cors: {
-    origin: "http://localhost:5173", // Frontend Vite dev server port
+    origin: (origin, callback) => {
+      // Allow all origins
+      callback(null, true);
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -67,7 +69,7 @@ io.on("connection", (socket) => {
 
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: true, // Allow all origins (returns the origin in Access-Control-Allow-Origin)
   credentials: true,
 }));
 
@@ -79,6 +81,7 @@ setIO(io);
 connectdb();
 
 // Use httpServer.listen() instead of app.listen() so Socket.IO works
-httpServer.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+// Bind to 0.0.0.0 to allow connections from outside the Docker container
+httpServer.listen(process.env.PORT || 3000, "0.0.0.0", () => {
+  console.log(`Server is running on port ${process.env.PORT || 3000}`);
 });

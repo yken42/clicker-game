@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import { getCookie } from "./cookies";
+import { SOCKET_URL } from "../config.js";
 
 // Singleton socket instance
 let socket = null;
@@ -27,7 +28,7 @@ export const connectSocket = () => {
     return null;
   }
   
-  socket = io("http://localhost:3000", {
+  socket = io(SOCKET_URL, {
     autoConnect: true,
     reconnection: true,
     reconnectionDelay: 1000,

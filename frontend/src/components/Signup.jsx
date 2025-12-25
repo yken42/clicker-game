@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/Signup.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config.js";
 export const Signup = () => {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export const Signup = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/user/signup",
+        `${API_URL}/api/user/signup`,
         { displayName, email, password }
       );
       if (response.status === 201) {

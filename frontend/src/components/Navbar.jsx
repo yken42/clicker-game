@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../utils/cookies";
 import { disconnectSocket } from "../utils/socket";
 import { useStore } from "../context/store";
+import { API_URL } from "../config.js";
 
 export const Navbar = () => {
   const isLoggedIn = getCookie("token");
@@ -13,7 +14,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/api/user/logout");
+      const response = await axios.post(`${API_URL}/api/user/logout`);
       if (response.status === 200) {
         // Clear global state before disconnecting
         resetClicks();

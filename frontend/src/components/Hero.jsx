@@ -4,6 +4,7 @@ import "../styles/Scoreboard.css";
 import { useStore, getStoreState } from "../context/store";
 import { getSocket } from "../utils/socket";
 import { getCookie } from "../utils/cookies";
+import { API_URL } from "../config.js";
 import axios from "axios";
 
 export const Hero = () => {
@@ -36,7 +37,7 @@ export const Hero = () => {
       if (!token) return;
 
       const response = await axios.get(
-        "http://localhost:3000/api/user/score",
+        `${API_URL}/api/user/score`,
         {
           headers: {
             authorization: token,
@@ -116,7 +117,7 @@ export const Hero = () => {
 
   const fetchScoreboard = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/user/scoreboard");
+      const response = await axios.get(`${API_URL}/api/user/scoreboard`);
       if (response.status === 200) {
         setScoreboard(response.data);
       }
@@ -131,7 +132,7 @@ export const Hero = () => {
       if (!token) return;
 
       await axios.post(
-        "http://localhost:3000/api/user/score",
+        `${API_URL}/api/user/score`,
         { clicks: score },
         {
           headers: {

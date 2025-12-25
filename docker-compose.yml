@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: clicker-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_ATLAS_URL=${DB_ATLAS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped
+    networks:
+      - clicker-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:3000}
+        - VITE_SOCKET_URL=${VITE_SOCKET_URL:-http://localhost:3000}
+    container_name: clicker-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - clicker-network
+
+networks:
+  clicker-network:
+    driver: bridge
+

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { setCookie } from "../utils/cookies";
 import { connectSocket } from "../utils/socket";
 import { useStore } from "../context/store";
+import { API_URL } from "../config.js";
 
 
 export const Login = () => {
@@ -16,7 +17,7 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/user/login", { email, password });
+      const response = await axios.post(`${API_URL}/api/user/login`, { email, password });
       if (response.status === 201) {
         // Clear global state before logging in to ensure fresh start
         resetClicks();
